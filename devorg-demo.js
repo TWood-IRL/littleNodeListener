@@ -1,4 +1,3 @@
-const axios = require('axios');
 const { CometD } = require('cometd');
 const { adapt: adaptCometD } = require('cometd-nodejs-client');
 var jsforce = require('jsforce');
