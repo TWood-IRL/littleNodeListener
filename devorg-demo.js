@@ -11,32 +11,23 @@ var conn = new jsforce.Connection({
   loginUrl : process.env.SALESFORCE_LOGIN_URL
 });
 async function run() {
-
-  const opportunity1Id = process.argv[2] || 'orgId'; 
-
   const  cometdUrl  = conn.instanceUrl  + '/cometd/48.0' ;
-
- 
   const token = conn.accessToken;   //Access token 
   if (!token) {
     console.log('Token  failed. Try again');
     return ;
   }
-
   console.log(`API endpoint: ${cometdUrl}`);
-
   spawnConnection({ token, cometdUrl }, opportunity1Id);
 }
 
 function spawnConnection({ token, cometdUrl }, opportunityId) {
   const connection = new CometD();
-
   connection.configure({
     requestHeaders: { authorization: `Bearer ${token}` },
     url: cometdUrl,
     appendMessageTypeToURL: false,
   });
-
   connection.handshake(response => {
     if (response.successful) {
       connection.batch(() => {
