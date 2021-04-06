@@ -5,11 +5,12 @@
     "node": "node -r esm"
   },
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "cometd": "^5.0.0",
     "cometd-nodejs-client": "^1.1.0",
+    "dotenv": "^8.2.0",
     "esm": "^3.2.25",
-    "jsforce": "^1.9.3"
+    "jsforce": "^1.10.1"
   },
   "devDependencies": {
     "@types/cometd": "^4.0.7"

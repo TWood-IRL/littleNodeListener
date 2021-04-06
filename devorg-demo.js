@@ -1,24 +1,24 @@
 const axios = require('axios');
 const { CometD } = require('cometd');
 const { adapt: adaptCometD } = require('cometd-nodejs-client');
+var jsforce = require('jsforce');
+require('dotenv').config()
 
 adaptCometD();
 
-const fullsharedConfig = {
-  apiUrl: 'https://tomwoodhousegs0-dev-ed.lightning.force.com',
-  cometdUrl: 'https://tomwoodhousegs0-dev-ed.lightning.force.com/cometd/48.0',
-}
 
+var conn = new jsforce.Connection({
+  // you can change loginUrl to connect to sandbox or prerelease env.
+  loginUrl : process.env.SALESFORCE_LOGIN_URL
+});
 async function run() {
 
   const opportunity1Id = process.argv[2] || 'orgId'; 
 
-  const { apiUrl, cometdUrl } = fullsharedConfig;
+  const  cometdUrl  = conn.instanceUrl  + '/cometd/48.0' ;
 
-  const response = await axios.get(apiUrl + '/login', {
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-  });
-  const token = response.data.body;   //Access token 
+ 
+  const token = conn.accessToken;   //Access token 
   if (!token) {
     console.log('Token  failed. Try again');
     return ;
@@ -41,10 +41,10 @@ function spawnConnection({ token, cometdUrl }, opportunityId) {
   connection.handshake(response => {
     if (response.successful) {
       connection.batch(() => {
-        connection.subscribe(`/topic/Opportunity?Id=${opportunityId}`, //Channel
+        connection.subscribe(`/data/AccountChangeEvent`, //Channel
           (cometdApplication) => {
-            console.log(`I have got an update from /topic/Opportunity?Id=${opportunityId}
-Here are the raw contents:`, cometdApplication, '\n');
+            console.log(`I have got an update from /data/AccountChangeEvent
+            Here are the raw contents:`, cometdApplication, '\n');
           });
 
       });
@@ -54,4 +54,8 @@ Here are the raw contents:`, cometdApplication, '\n');
   });
 }
 
-run();
+conn.login(process.env.SALESFORCE_USERNAME, process.env.SALESFORCE_PASSWORD, function(err, res) {
+  if (err) { return console.error(err); }
+  run() ; 
+});
+
