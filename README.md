@@ -6,11 +6,13 @@ or
 
 $ npm install
 
-Also note that I'm using Node.js v12
+
 
 
 # Run
 
 Run this and follow the instructions that it prints:
+
+Create .env file containing username and password information. 
 
 $ node sandbox-demo.js
